@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Playland Aqua - Parque Acuático</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --primario: #00a6ff;
+      --secundario: #ffb703;
+      --oscuro: #022b3a;
+      --claro: #f5f9ff;
+      --gris: #e0e0e0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: #ffffff;
+      color: #222;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(2, 43, 58, 0.96);
+      color: #fff;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: 0.03em;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-left: 0.75rem;
+      padding: 0.3rem 0.5rem;
+      border-radius: 999px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    nav a:hover {
+      background: #fff;
+      color: var(--oscuro);
+    }
+
+    .btn-cta {
+      background: var(--secundario);
+      color: #000;
+      border-radius: 999px;
+      padding: 0.4rem 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    /* Alerta parque cerrado */
+    .alert-cerrado {
+      display: none; /* JS la mostrará si el parque está cerrado */
+      background: #ffefef;
+      border: 1px solid #ffc7c7;
+      color: #8b0000;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      margin: 0.75rem 1rem;
+      max-width: 1100px;
+    }
+
+    .alert-cerrado strong {
+      margin-right: 0.25rem;
+    }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.7fr);
+      gap: 1.5rem;
+      align-items: center;
+      margin-top: 1rem;
+      padding: 1.5rem;
+      border-radius: 1.5rem;
+      background: radial-gradient(circle at top left, #e0f7ff, #fdfbff);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    }
+
+    .hero h1 {
+      font-size: 2.1rem;
+      color: var(--oscuro);
+      margin-bottom: 0.75rem;
+    }
+
+    .hero p {
+      font-size: 0.98rem;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .hero-img {
+      border-radius: 1.25rem;
+      overflow: hidden;
+      border: 4px solid #fff;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    section {
+      margin-top: 2.5rem;
+    }
+
+    section h2 {
+      font-size: 1.4rem;
+      margin-bottom: 0.75rem;
+      color: var(--oscuro);
+    }
+
+    section p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 0.5rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 1rem;
+      padding: 1rem;
+      border: 1px solid var(--gris);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.03);
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      background: var(--claro);
+      color: var(--oscuro);
+      margin-bottom: 0.4rem;
+    }
+
+    .list {
+      list-style: none;
+      font-size: 0.92rem;
+      margin-top: 0.5rem;
+    }
+
+    .list li {
+      margin-bottom: 0.4rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: #eef6ff;
+    }
+
+    /* Promociones */
+    .promo-tag {
+      font-weight: 600;
+      color: var(--primario);
+      font-size: 0.9rem;
+    }
+
+    /* Horario */
+    .horario-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    .horario-table th,
+    .horario-table td {
+      border: 1px solid var(--gris);
+      padding: 0.4rem 0.6rem;
+      text-align: left;
+    }
+
+    .horario-table th {
+      background: var(--claro);
+    }
+
+    /* Menú restaurante */
+    .menu-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .menu-item span:first-child {
+      font-weight: 500;
+    }
+
+    /* Redes sociales */
+    .social-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .social-links a {
+      text-decoration: none;
+      font-size: 0.9rem;
+      padding: 0.4rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--gris);
+      color: var(--oscuro);
+      background: #fff;
+    }
+
+    /* Galería */
+    .galeria {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+
+    .galeria img {
+      width: 100%;
+      border-radius: 0.75rem;
+      height: 140px;
+      object-fit: cover;
+      border: 1px solid var(--gris);
+    }
+
+    /* Pagos online */
+    .pagos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+
+    .btn-link {
+      display: inline-block;
+      text-decoration: none;
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid var(--primario);
+      color: var(--oscuro);
+      font-size: 0.9rem;
+      background: #e8f6ff;
+      margin-top: 0.35rem;
+    }
+
+    /* Merchandising */
+    .merch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-top: 0.75rem;
+    }
+
+    .merch-item {
+      background: #fff;
+      border-radius: 0.9rem;
+      border: 1px solid var(--gris);
+      padding: 0.75rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .merch-item img {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 0.75rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .merch-item strong {
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--gris);
+      margin-top: 2rem;
+      padding-top: 1rem;
+      font-size: 0.8rem;
+      color: #555;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 1.25rem;
+      }
+
+      nav {
+        display: none; /* Para mantenerlo simple en móvil, puedes luego agregar menú hamburguesa */
+      }
+
+      .nav-container {
+        justify-content: space-between;
+      }
+
+      .alert-cerrado {
+        margin: 0.5rem 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mensaje emergente si el parque está cerrado -->
+  <div id="alertCerrado" class="alert-cerrado">
+    <strong>Parque cerrado por hoy.</strong>
+    Nuestro horario de atención ha finalizado. Puedes comprar tus entradas online o escribirnos por WhatsApp y te
+    responderemos en el siguiente horario hábil.
+  </div>
+
+  <header>
+    <div class="nav-container">
+      <div class="logo">Playland Aqua</div>
+      <nav>
+        <a href="#playland-aqua">Aqua</a>
+        <a href="#playland-games">Playland Games</a>
+        <a href="#promos-eventos">Promociones</a>
+        <a href="#horario">Horario</a>
+        <a href="#menu-restaurante">Restaurante</a>
+        <a href="#galeria">Galería</a>
+        <a href="#pagos-online">Pagos</a>
+        <a href="#merch">Merch</a>
+      </nav>
+      <a href="#pagos-online" class="btn-cta">Comprar entradas</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero / Playland Aqua info -->
+    <section class="hero" id="playland-aqua">
+      <div>
+        <h1>Bienvenido a Playland Aqua</h1>
+        <p>
+          El parque acuático perfecto para familias, amigos y empresas. Piscinas temáticas, toboganes para todas
+          las edades, zonas de juegos y un restaurante con opciones para todos los gustos.
+        </p>
+        <p>
+          Disfruta de un día completo de diversión, sol y agua en un entorno seguro, limpio y diseñado para crear
+          recuerdos inolvidables.
+        </p>
+        <div class="hero-actions">
+          <a href="#pagos-online" class="btn-cta">Comprar entradas online</a>
+          <a href="#promos-eventos" class="btn-link">Ver promociones y eventos</a>
+        </div>
+      </div>
+      <div class="hero-img">
+        <img src="https://via.placeholder.com/600x400?text=Parque+Acuatico+Playland+Aqua"
+             alt="Foto del parque acuático Playland Aqua">
+      </div>
+    </section>
+
+    <!-- Playland Games info -->
+    <section id="playland-games">
+      <h2>Playland Games</h2>
+      <p>
+        Además del parque acuático, Playland ofrece una zona de juegos con actividades para todas las edades:
+      </p>
+      <div class="grid-2">
+        <div class="card">
+          <span class="badge">Zona infantil</span>
+          <p>Área segura con juegos de agua, mini toboganes y fuentes interactivas para los más pequeños.</p>
+          <ul class="list">
+            <li><span>Mini toboganes</span> <span class="pill">3–7 años</span></li>
+            <li><span>Fuente de chorros</span> <span class="pill">Niños y niñas</span></li>
+            <li><span>Guardería acuática</span> <span class="pill">Bajo supervisión</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="badge">Zona adrenalina</span>
+          <p>Toboganes altos, caídas libres y juegos interactivos para jóvenes y adultos.</p>
+          <ul class="list">
+            <li><span>Tobogán Kamikaze</span> <span class="pill">Altura mínima 1.40m</span></li>
+            <li><span>Río lento y rápido</span> <span class="pill">Familiar</span></li>
+            <li><span>Zona de juegos secos</span> <span class="pill">Arcade, air hockey</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Promociones y eventos -->
+    <section id="promos-eventos">
+      <h2>Promociones y eventos</h2>
+      <div class="grid-2">
+        <div class="card">
+          <span class="badge">Promociones</span>
+          <p class="promo-tag">Promo Familia Splash</p>
+          <p>
+            Entrada para 4 personas + almuerzo básico incluido.
+          </p>
+          <p><strong>Precio especial:</strong> Bs. 240 (en lugar de Bs. 320)</p>
+          <p class="promo-tag">Miércoles Locos</p>
+          <p>50% de descuento en la segunda entrada en compras online.</p>
+        </div>
+        <div class="card">
+          <span class="badge">Eventos</span>
+          <p><strong>Fiestas de cumpleaños</strong></p>
+          <p>
+            Paquetes especiales con decoración, animación y menú infantil. Reservas con mínimo 7 días de
+            anticipación.
+          </p>
+          <p><strong>Eventos corporativos</strong></p>
+          <p>
+            Jornadas de integración, team building y actividades para empresas con atención personalizada.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Horario de atención -->
+    <section id="horario">
+      <h2>Horario de atención</h2>
+      <p>Consulta nuestros horarios y planea tu visita a Playland Aqua.</p>
+      <table class="horario-table">
+        <thead>
+          <tr>
+            <th>Día</th>
+            <th>Horario</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Lunes – Viernes</td>
+            <td>10:00 – 18:00</td>
+          </tr>
+          <tr>
+            <td>Sábados</td>
+            <td>10:00 – 19:00</td>
+          </tr>
+          <tr>
+            <td>Domingos y feriados</td>
+            <td>10:00 – 19:00</td>
+          </tr>
+          <tr>
+            <td><strong>Días de mantenimiento</strong></td>
+            <td><strong>Se anuncian en redes sociales</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Menú restaurante -->
+    <section id="menu-restaurante">
+      <h2>Menú restaurante</h2>
+      <p>Disfruta de opciones frescas y sabrosas sin salir del parque.</p>
+      <div class="grid-2">
+        <div class="card">
+          <span class="badge">Platos principales</span>
+          <div class="menu-item">
+            <span>Hamburguesa Aqua</span><span>Bs. 45</span>
+          </div>
+          <div class="menu-item">
+            <span>Pollo a la parrilla + guarnición</span><span>Bs. 55</span>
+          </div>
+          <div class="menu-item">
+            <span>Ensalada fresca del día</span><span>Bs. 35</span>
+          </div>
+        </div>
+        <div class="card">
+          <span class="badge">Snacks y bebidas</span>
+          <div class="menu-item">
+            <span>Papitas + nuggets</span><span>Bs. 30</span>
+          </div>
+          <div class="menu-item">
+            <span>Helados variados</span><span>Bs. 15</span>
+          </div>
+          <div class="menu-item">
+            <span>Jugos naturales</span><span>Bs. 18</span>
+          </div>
+          <div class="menu-item">
+            <span>Refrescos</span><span>Bs. 10</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Redes sociales -->
+    <section id="redes-sociales">
+      <h2>Redes sociales</h2>
+      <p>Síguenos para enterarte de nuevas promos, cambios de horario y eventos especiales.</p>
+      <div class="social-links">
+        <a href="https://www.facebook.com" target="_blank" rel="noopener">Facebook Playland Aqua</a>
+        <a href="https://www.instagram.com" target="_blank" rel="noopener">Instagram @playlandaqua</a>
+        <a href="https://wa.me/59170000000" target="_blank" rel="noopener">WhatsApp Reservas</a>
+        <a href="https://www.tiktok.com" target="_blank" rel="noopener">TikTok Playland</a>
+      </div>
+    </section>
+
+    <!-- Galería -->
+    <section id="galeria">
+      <h2>Galería de fotos de visitantes</h2>
+      <p>Algunas de las mejores fotos que nuestros visitantes comparten con nosotros.</p>
+      <div class="galeria">
+        <img src="https://via.placeholder.com/300x200?text=Familia+en+la+piscina"
+             alt="Familia disfrutando de la piscina">
+        <img src="https://via.placeholder.com/300x200?text=Tobogan+gigante"
+             alt="Visitantes en el tobogán">
+        <img src="https://via.placeholder.com/300x200?text=Zona+infantil"
+             alt="Niños jugando en zona infantil">
+        <img src="https://via.placeholder.com/300x200?text=Atardecer+en+Playland"
+             alt="Atardecer en el parque">
+      </div>
+    </section>
+
+    <!-- Enlaces para pagos online -->
+    <section id="pagos-online">
+      <h2>Enlaces para pagos online</h2>
+      <p>Compra tus entradas o realiza reservas de forma rápida y segura.</p>
+      <div class="pagos-grid">
+        <div class="card">
+          <span class="badge">Entradas diarias</span>
+          <p>Compra tus entradas individuales o familiares.</p>
+          <a class="btn-link" href="https://tu-pasarela.com/entradas" target="_blank" rel="noopener">
+            Pagar entradas
+          </a>
+        </div>
+        <div class="card">
+          <span class="badge">Cumpleaños y eventos</span>
+          <p>Reserva paquetes de cumpleaños o eventos corporativos.</p>
+          <a class="btn-link" href="https://tu-pasarela.com/eventos" target="_blank" rel="noopener">
+            Reservar evento
+          </a>
+        </div>
+        <div class="card">
+          <span class="badge">Gift cards</span>
+          <p>Regala un día completo en Playland Aqua.</p>
+          <a class="btn-link" href="https://tu-pasarela.com/giftcards" target="_blank" rel="noopener">
+            Comprar gift card
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Producto de merchandising -->
+    <section id="merch">
+      <h2>Producto de merchandising</h2>
+      <p>Llévate un recuerdo de tu visita a Playland Aqua.</p>
+      <div class="merch-grid">
+        <div class="merch-item">
+          <img src="https://via.placeholder.com/300x200?text=Toalla+Playland"
+               alt="Toalla de Playland Aqua">
+          <strong>Toalla Playland Aqua</strong>
+          <p>Toalla de microfibra de secado rápido con diseño exclusivo.</p>
+          <p><strong>Bs. 90</strong></p>
+        </div>
+        <div class="merch-item">
+          <img src="https://via.placeholder.com/300x200?text=Gorra+Playland"
+               alt="Gorra de Playland Aqua">
+          <strong>Gorra oficial</strong>
+          <p>Gorra ajustable, ideal para el sol y la piscina.</p>
+          <p><strong>Bs. 60</strong></p>
+        </div>
+        <div class="merch-item">
+          <img src="https://via.placeholder.com/300x200?text=Vaso+Termo"
+               alt="Vaso termo Playland Aqua">
+          <strong>Vaso térmico</strong>
+          <p>Perfecto para bebidas frías durante todo el día.</p>
+          <p><strong>Bs. 70</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Playland Aqua &copy; 2025 · Dirección: Av. Principal #123, Ciudad · Tel: (+591) 700-00000
+    </footer>
+  </main>
+
+  <script>
+    // Configura aquí si el parque está abierto o cerrado para mostrar el mensaje emergente
+    // Cambia a true cuando el parque esté abierto
+    const parqueAbierto = false;
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const alerta = document.getElementById("alertCerrado");
+      if (!parqueAbierto && alerta) {
+        alerta.style.display = "block";
+        // Si quieres que aparezca como alert nativo del navegador:
+        // alert("En este momento el parque no se encuentra en atención al público.");
+      }
+    });
+  </script>
+</body>
+</html>
